@@ -1,5 +1,5 @@
 """
-URL configuration for ecommercesite project.
+URL configuration for booklibrary project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -21,9 +21,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("cart/", include('cart.urls')),
-    path("orders/", include("orders.urls")),
-    path('', include('products.urls', namespace='products')),
+    path("borrowing/", include('borrowing.urls')),
+    path("loans/", include("loans.urls")),
+    path('', include('books.urls', namespace='books')),
    
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
