@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 from .models import Category, Book, Loan
 from datetime import date, timedelta
 
@@ -12,7 +13,7 @@ def book_list(request, category_slug=None):
         category = get_object_or_404(Category, slug=category_slug)
         books = books.filter(category=category)
     
-    return render(request, 'products/book/list.html', {
+    return render(request, 'books/book/list.html', {
         'category': category,
         'books': books,
         'categories': categories,
@@ -20,7 +21,7 @@ def book_list(request, category_slug=None):
     
 def book_detail(request, id, slug):
     book = get_object_or_404(Book, id=id, slug=slug)
-    return render(request, 'products/book/detail.html', {'book': book})
+    return render(request, 'books/book/detail.html', {'book': book})
 
 @login_required
 def borrow_book(request, book_id):
@@ -30,7 +31,7 @@ def borrow_book(request, book_id):
     existing_loan = Loan.objects.filter(book=book, user=request.user, returned_at__isnull=True).exists()
     if existing_loan:
         messages.error(request, 'この本はすでに借りています。')
-        return redirect('products:book_detail', id=book.id, slug=book.slug)
+        return redirect('books:book_detail', id=book.id, slug=book.slug)
     
     # 貸出処理
     due_date = date.today() + timedelta(days=14)  # 2週間後
@@ -39,7 +40,7 @@ def borrow_book(request, book_id):
     book.save()
     
     messages.success(request, f'「{book.title}」を借りました。返却予定日: {due_date}')
-    return redirect('products:book_detail', id=book.id, slug=book.slug)
+    return redirect('books:book_detail', id=book.id, slug=book.slug)
 
 @login_required
 def return_book(request, loan_id):
@@ -52,8 +53,4 @@ def return_book(request, loan_id):
     loan.book.save()
     
     messages.success(request, f'「{loan.book.title}」を返却しました。')
-    return redirect('products:book_list')
-
-# 互換性のため
-product_list = book_list
-product_detail = book_detail
+    return redirect('books:book_list')

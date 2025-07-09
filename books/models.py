@@ -30,7 +30,7 @@ class Book(models.Model):
         return self.title
     
     def get_absolute_url(self):
-        return reverse('products:book_detail', kwargs={'id':self.id, 'slug':self.slug})
+        return reverse('books:book_detail', kwargs={'id':self.id, 'slug':self.slug})
 
 
 class Loan(models.Model):

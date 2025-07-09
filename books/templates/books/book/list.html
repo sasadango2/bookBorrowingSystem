@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{%block title%}図書館 - 書籍一覧{%endblock%}
+
+{%block content%}
+
+<div class="container mx-auto p-4 flex">
+    <aside class="w-1/4 p-4">
+        <h2 class="font-bold">ジャンル:</h2>
+        <ul>
+            <li><a href="{% url 'books:book_list' %}" class="text-blue-600 hover:underline">すべて</a></li>
+            {%for category in categories%}
+            <li>
+                <a href="{% url 'books:book_list_by_category' category.slug %}" class="text-blue-600 hover:underline">{{category.name}}</a>
+            </li>
+            {%endfor%}
+            
+        </ul>
+    </aside>
+    <main class="w-3/4 p-4">
+        {%if category%}
+        <h2 class="font-bold mb-4 text-2xl">{{category.name}}</h2>
+        {%else%}
+        <h2 class="font-bold mb-4 text-2xl">すべての書籍</h2>
+
+        {%endif%}
+        <div class="grid grid-cols-3 gap-4">
+            {% for book in books %}
+            <a href="{% url 'books:book_detail' book.id book.slug %}">
+            <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+                {% if book.image %}
+                {% if book.image %}
+                <img src="{{book.image.url}}" alt="{{book.title}}" class="h-64 w-44 object-cover mx-auto">
+                {%else%}
+                <div class="h-64 w-44 bg-gray-200 flex items-center justify-center mx-auto">
+                    <span class="text-gray-500">画像なし</span>
+                </div>
+                {%endif%}
+
+                <h3 class="font-semibold mt-2">{{book.title}}</h3>
+                <p class="text-gray-600">著者: {{book.author}}</p>
+                <p class="text-green-600">{% if book.available %}貸出可能{% else %}貸出中{% endif %}</p>
+            </div>
+        </a>
+            {%endfor%}
+
+        </div>
+    </main>
+    
+</div>
+
+{%endblock%}
